@@ -6,6 +6,8 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"strings"
 	"github.com/gorilla/context"
+	"QuickAndDirtyAuthZ/authorization"
+	"github.com/gorilla/mux"
 )
 
 type Token struct {
@@ -14,7 +16,7 @@ type Token struct {
 	exp string
 }
 
-const secretKey = "igorigorigorigorigro"
+const secretKey = "igorigorigorigorigor"
 
 func Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
@@ -29,18 +31,25 @@ func Middleware(next http.Handler) http.Handler {
 			return
 		}
 
+		// Decode the token
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
-
 		token, err := decodeToken(tokenString)
 		if err != nil {
 			http.Error(rw, err.Error(), http.StatusUnauthorized)
 			return
 		}
 
-		// map claims. Add role to context
+		// Map claims. Add role to context, check if endp
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 			context.Set(req, "role", claims["role"])
 			context.Set(req, "user", claims["user"])
+
+			authorized := authorization.ConfirmRoleMapping(claims["role"].(string), authorization.DecodeRolePath(req.URL.Path, mux.Vars(req)))
+			if !authorized {
+				http.Error(rw, "forbidden", http.StatusUnauthorized)
+				return
+			}
+
 		} else {
 			http.Error(rw, err.Error(), http.StatusUnauthorized)
 			return

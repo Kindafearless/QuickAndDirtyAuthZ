@@ -2,10 +2,10 @@ package middleware
 
 import (
 	"net/http"
-	"github.com/gorilla/context"
-	"strings"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"strings"
+	"github.com/gorilla/context"
 )
 
 type Token struct {
@@ -19,7 +19,15 @@ const secretKey = "igorigorigorigorigro"
 func Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 
+		fmt.Printf("Request: %v\n", req.RequestURI)
+
 		authHeader := req.Header.Get("Authorization")
+
+		// if the header exists, setup context
+		if authHeader == "" || strings.Contains(authHeader, "Basic") {
+			http.Error(rw, "Request requires token", http.StatusUnauthorized)
+			return
+		}
 
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 

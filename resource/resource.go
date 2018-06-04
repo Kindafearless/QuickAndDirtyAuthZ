@@ -4,7 +4,7 @@ import (
 	"github.com/gorilla/context"
 	"net/http"
 	"encoding/json"
-	"AuthZ/database"
+	"QuickAndDirtyAuthZ/database"
 	"github.com/gorilla/mux"
 )
 

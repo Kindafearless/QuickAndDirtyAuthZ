@@ -1,7 +1,7 @@
 package main
 
 import (
-	"AuthZ/database"
+	"QuickAndDirtyAuthZ/database"
 	"github.com/gorilla/mux"
 )
 

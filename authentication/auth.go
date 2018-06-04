@@ -7,7 +7,7 @@ import (
 	"time"
 	"encoding/base64"
 	"strings"
-	"AuthZ/database"
+	"QuickAndDirtyAuthZ/database"
 )
 
 type DatabaseConnector struct {
@@ -20,7 +20,7 @@ type DataObject struct {
 	Message string `json:"message"`
 }
 
-const secretKey = "igorigorigorigorigro"
+const secretKey = "igorigorigorigorigor"
 
 func (dc *DatabaseConnector) Login(rw http.ResponseWriter, req *http.Request) {
 

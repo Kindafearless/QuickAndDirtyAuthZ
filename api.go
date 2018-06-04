@@ -7,23 +7,24 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 
-	"AuthZ/health"
-	"AuthZ/middleware"
-	"AuthZ/authentication"
-	"AuthZ/resource"
+	"QuickAndDirtyAuthZ/health"
+	"QuickAndDirtyAuthZ/middleware"
+	"QuickAndDirtyAuthZ/authentication"
+	"QuickAndDirtyAuthZ/resource"
 )
 
 // InitializeRoutes configures all of the routing handlers for endpoints within the application.
 func (a *App) InitializeRoutes() error {
 
 	// Health
-	a.Router.Handle("/health", middleware.Middleware(http.HandlerFunc(health.Health))).Methods("GET", "OPTIONS")
+	a.Router.Handle("/health", http.HandlerFunc(health.Health)).Methods("GET", "OPTIONS")
 
 	// Authentication (Pretending to send user to identity server)
+
 	// Resource Endpoints
 	authDatabaseConnector := authentication.DatabaseConnector{DB: a.DB, DatabaseName: a.UserTableName}
 
-	a.Router.Handle("/login", middleware.Middleware(http.HandlerFunc(authDatabaseConnector.Login))).Methods("POST", "OPTIONS")
+	a.Router.Handle("/login",http.HandlerFunc(authDatabaseConnector.Login)).Methods("POST", "OPTIONS")
 	a.Router.Handle("/users/list", middleware.Middleware(http.HandlerFunc(authDatabaseConnector.List))).Methods("GET", "OPTIONS")
 
 	// Resource Endpoints
